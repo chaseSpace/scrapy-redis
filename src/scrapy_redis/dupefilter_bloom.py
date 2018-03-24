@@ -35,7 +35,7 @@ class BloomDupeFilter(object):
 
     logger = logger
 
-    def __init__(self , server, db, blockNum, key ,debug ):
+    def __init__(self , server, blockNum, key ,debug ):
         """
         :param host: the host of Redis
         :param port: the port of Redis
@@ -63,7 +63,6 @@ class BloomDupeFilter(object):
         self.key = key
         self.blockNum = blockNum
         self.hashfunc = []
-        self.db = db
         self.debug = debug
         self.logdupes = True
 

@@ -14,8 +14,8 @@ REDIS_PARAMS = {
     'socket_connect_timeout': 30,
     'retry_on_timeout': True,
     'encoding': REDIS_ENCODING,
-    #'db':2,
-    #'password':xxx,
+    'db':0,
+    #'password':'',
 }
 
 SCHEDULER_QUEUE_KEY = '%(spider)s:requests'

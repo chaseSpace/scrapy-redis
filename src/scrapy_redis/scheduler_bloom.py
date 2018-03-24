@@ -137,7 +137,6 @@ class Scheduler(object):
             self.df = load_object(self.dupefilter_cls)(
                 server=self.server,
                 key=self.dupefilter_key % {'spider': spider.name},
-                db=spider.settings.getint('REDIS_DB_NUM'),
                 blockNum=spider.settings.getint('BLOCK_NUM'),
                 debug=spider.settings.getbool('DUPEFILTER_DEBUG'),
             )
