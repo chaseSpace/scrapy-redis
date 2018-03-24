@@ -1,10 +1,6 @@
 ============
-Scrapy-Redis
+Scrapy-Redis-BloomFilter
 ============
-
-.. image:: https://readthedocs.org/projects/scrapy-redis/badge/?version=latest
-        :target: https://readthedocs.org/projects/scrapy-redis/?badge=latest
-        :alt: Documentation Status
 
 .. image:: https://img.shields.io/pypi/v/scrapy-redis.svg
         :target: https://pypi.python.org/pypi/scrapy-redis
@@ -12,43 +8,22 @@ Scrapy-Redis
 .. image:: https://img.shields.io/pypi/pyversions/scrapy-redis.svg
         :target: https://pypi.python.org/pypi/scrapy-redis
 
-.. image:: https://img.shields.io/travis/rolando/scrapy-redis.svg
-        :target: https://travis-ci.org/rolando/scrapy-redis
-
-.. image:: https://codecov.io/github/rolando/scrapy-redis/coverage.svg?branch=master
-    :alt: Coverage Status
-    :target: https://codecov.io/github/rolando/scrapy-redis
-
-.. image:: https://landscape.io/github/rolando/scrapy-redis/master/landscape.svg?style=flat
-    :target: https://landscape.io/github/rolando/scrapy-redis/master
-    :alt: Code Quality Status
-
-.. image:: https://requires.io/github/rolando/scrapy-redis/requirements.svg?branch=master
-    :alt: Requirements Status
-    :target: https://requires.io/github/rolando/scrapy-redis/requirements/?branch=master
 
 Redis-based components for Scrapy.
 
 * Free software: MIT license
-* Documentation: https://scrapy-redis.readthedocs.org.
+* scrapy-redis: https://scrapy-redis.readthedocs.org.
+* BloomFilter(English): https://archive.codeplex.com/?p=bloomfilter.
+* BloomFilter(Chinese): https://baike.baidu.com/item/bloom%20filter/6630926?fr=aladdin
 * Python versions: 2.7, 3.4+
 
-Features
+New Features
 --------
 
-* Distributed crawling/scraping
+* Use BloomFilter as DupeFilter for scrapy
 
-    You can start multiple spider instances that share a single redis queue.
-    Best suitable for broad multi-domain crawls.
-
-* Distributed post-processing
-
-    Scraped items gets pushed into a redis queued meaning that you can start as
-    many as needed post-processing processes sharing the items queue.
-
-* Scrapy plug-and-play components
-  
-    Scheduler + Duplication Filter, Item Pipeline, Base Spiders.
+    Using BloomFilter as a dupefilter in the project can meet up to hundreds of millions of Request objects Duplicates removal, only a little bit of memory.
+    
     
 .. note:: This features cover the basic case of distributing the workload across multiple workers. If you need more features like URL expiration, advanced URL prioritization, etc., we suggest you to take a look at the `Frontera`_ project.
 
@@ -68,11 +43,12 @@ Use the following settings in your project:
 .. code-block:: python
 
   # Enables scheduling storing requests queue in redis.
-  SCHEDULER = "scrapy_redis.scheduler.Scheduler"
-
-  # Ensure all spiders share same duplicates filter through redis.
-  DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
-
+  SCHEDULER = "scrapy_redis.scheduler.Scheduler"  （Default for scrapy-redis）
+  SCHEDULER = "scrapy_redis.scheduler_bloom.Scheduler" (BloomFilter)
+  
+  # Ensure all spiders share same duplicates filter through redis.
+  DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"  （Default for scrapy-redis）
+  DUPEFILTER_CLASS = "scrapy_redis.dupefilter_bloom.BloomDupeFilter"  (BloomFilter)
   # Default requests serializer is pickle, but it can be changed to any module
   # with loads and dumps functions. Note that pickle is not compatible between
   # python versions.
@@ -134,6 +110,15 @@ Use the following settings in your project:
   # Use other encoding than utf-8 for redis.
   #REDIS_ENCODING = 'latin1'
 
+中文说明
+---------------------
+
+这个scrapy扩展由scrapy-redis改良而来，原来版本的[scrapy-redis](https://github.com/rmax/scrapy-redis)默认的去重类是RFPDupeFilter，将Request经过pickle->hash函数sha1处理成160bit的字符串作为键值插入redis服务器中，通过理论值计算，当容量达到10亿时，对内存的需求将至少达到190G左右。若采用布隆过滤器，仅256M内存就可以实现近一亿条Request去重，误判率仅8.56e-5，约一万条误判一条，用这个误判率来省去大量的服务器内存成本是值得，而且重复的数据完全可以在后期通过其他手段再处理。
+
+其他
+----------------
+
+关于scrapy-redis-BloomFilter库的实现，我并不是先行者。这里要提到一位大神，github：qiyeboy，早在一年多（2017，至少）以前它就把这个写出来了。我本是想直接使用它的[scrapy—redis-BloomFilter](https://github.com/qiyeboy/Scrapy_Redis_Bloomfilter)库的,但实践过后发觉它的使用方式稍许麻烦，需要将库文件拷贝到scrapy_project/scrapy_project目录下，运行scrapy后还会生成其他文件，作为强迫症的我如何能忍呢。。于是花了些时间自己将BloomFilter的功能嵌入到scrapy-redis组件中去，不过实现bloomfilter的[底层代码](https://blog.csdn.net/bone_ace/article/details/53107018)还是用的它的。使用起来是相当的简单，几乎与使用scrapy-redis没什么区别。
 .. note::
 
   Version 0.3 changed the requests serialization from ``marshal`` to ``cPickle``,
@@ -213,17 +198,8 @@ Then:
     may have a few seconds of delay between the time you push a new url and the
     spider starts crawling it.
 
+Thanks
+-----
 
-Contributions
--------------
+    * qiyeboy：https://github.com/qiyeboy/
 
-Donate BTC: ``13haqimDV7HbGWtz7uC6wP1zvsRWRAhPmF``
-
-Donate BCC: ``CSogMjdfPZnKf1p5ocu3gLR54Pa8M42zZM``
-
-Donate ETH: ``0x681d9c8a2a3ff0b612ab76564e7dca3f2ccc1c0d``
-
-Donate LTC: ``LaPHpNS1Lns3rhZSvvkauWGDfCmDLKT8vP``
-
-
-.. _Frontera: https://github.com/scrapinghub/frontera
