@@ -113,7 +113,7 @@ Use the following settings in your project:
 中文说明
 ---------------------
 
-这个scrapy扩展由scrapy-redis改良而来，原来版本的[scrapy-redis][2]默认的去重类是RFPDupeFilter，将Request经过pickle->hash函数sha1处理成160bit的字符串作为键值插入redis服务器中，通过理论值计算，当容量达到10亿时，对内存的需求将至少达到190G左右。若采用布隆过滤器，仅256M内存就可以实现近一亿条Request去重，误判率仅8.56e-5，约一万条误判一条，用这个误判率来省去大量的服务器内存成本是值得，而且重复的数据完全可以在后期通过其他手段再处理。
+这个scrapy扩展由scrapy-redis改良而来，原来版本的[scrapy-redis](http://baidu.com)默认的去重类是RFPDupeFilter，将Request经过pickle->hash函数sha1处理成160bit的字符串作为键值插入redis服务器中，通过理论值计算，当容量达到10亿时，对内存的需求将至少达到190G左右。若采用布隆过滤器，仅256M内存就可以实现近一亿条Request去重，误判率仅8.56e-5，约一万条误判一条，用这个误判率来省去大量的服务器内存成本是值得，而且重复的数据完全可以在后期通过其他手段再处理。
 
 其他
 ----------------
