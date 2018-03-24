@@ -14,12 +14,17 @@ REDIS_PARAMS = {
     'socket_connect_timeout': 30,
     'retry_on_timeout': True,
     'encoding': REDIS_ENCODING,
+    #'db':2,
+    #'password':xxx,
 }
 
 SCHEDULER_QUEUE_KEY = '%(spider)s:requests'
 SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.PriorityQueue'
 SCHEDULER_DUPEFILTER_KEY = '%(spider)s:dupefilter'
 SCHEDULER_DUPEFILTER_CLASS = 'scrapy_redis.dupefilter.RFPDupeFilter'
+
+SCHEDULER_DUPEFILTER_BM_KEY = '%(spider)s:dupefilterBloom'
+SCHEDULER_DUPEFILTER_BM_CLASS = 'scrapy_redis.dupefilter_bloom.BloomDupeFilter'
 
 START_URLS_KEY = '%(name)s:start_urls'
 START_URLS_AS_SET = False
