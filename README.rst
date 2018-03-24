@@ -113,12 +113,12 @@ Use the following settings in your project:
 中文说明
 ---------------------
 
-这个scrapy扩展由scrapy-redis改良而来，原来版本的[scrapy-redis](https://github.com/rmax/scrapy-redis)默认的去重类是RFPDupeFilter，将Request经过pickle->hash函数sha1处理成160bit的字符串作为键值插入redis服务器中，通过理论值计算，当容量达到10亿时，对内存的需求将至少达到190G左右。若采用布隆过滤器，仅256M内存就可以实现近一亿条Request去重，误判率仅8.56e-5，约一万条误判一条，用这个误判率来省去大量的服务器内存成本是值得，而且重复的数据完全可以在后期通过其他手段再处理。
+这个scrapy扩展由scrapy-redis改良而来，原来版本的[scrapy-redis][2]默认的去重类是RFPDupeFilter，将Request经过pickle->hash函数sha1处理成160bit的字符串作为键值插入redis服务器中，通过理论值计算，当容量达到10亿时，对内存的需求将至少达到190G左右。若采用布隆过滤器，仅256M内存就可以实现近一亿条Request去重，误判率仅8.56e-5，约一万条误判一条，用这个误判率来省去大量的服务器内存成本是值得，而且重复的数据完全可以在后期通过其他手段再处理。
 
 其他
 ----------------
 
-关于scrapy-redis-BloomFilter库的实现，我并不是先行者。这里要提到一位大神，github：qiyeboy，早在一年多（2017，至少）以前它就把这个写出来了。我本是想直接使用它的[scrapy—redis-BloomFilter](https://github.com/qiyeboy/Scrapy_Redis_Bloomfilter)库的,但实践过后发觉它的使用方式稍许麻烦，需要将库文件拷贝到scrapy_project/scrapy_project目录下，运行scrapy后还会生成其他文件，作为强迫症的我如何能忍呢。。于是花了些时间自己将BloomFilter的功能嵌入到scrapy-redis组件中去，不过实现bloomfilter的[底层代码](https://blog.csdn.net/bone_ace/article/details/53107018)还是用的它的。使用起来是相当的简单，几乎与使用scrapy-redis没什么区别。
+关于scrapy-redis-BloomFilter库的实现，我并不是先行者。这里要提到一位大神，github：qiyeboy，早在一年多（2017，至少）以前它就把这个写出来了。我本是想直接使用它的[scrapy-redis-BloomFilter][1]库的,但实践过后发觉它的使用方式稍许麻烦，需要将库文件拷贝到scrapy_project/scrapy_project目录下，运行scrapy后还会生成其他文件，作为强迫症的我如何能忍呢。。于是花了些时间自己将BloomFilter的功能嵌入到scrapy-redis组件中去，不过实现bloomfilter的[底层代码][3]还是用的它的。使用起来是相当的简单，几乎与使用scrapy-redis没什么区别。
 .. note::
 
   Version 0.3 changed the requests serialization from ``marshal`` to ``cPickle``,
@@ -203,3 +203,6 @@ Thanks
 
     * qiyeboy：https://github.com/qiyeboy/
 
+[1]: https://github.com/qiyeboy/Scrapy_Redis_Bloomfilter  "scrapy-redis-BloomFilter"
+[2]: https://github.com/rmax/scrapy-redis  "scrapy-redis"
+[3]: https://blog.csdn.net/bone_ace/article/details/53107018  "底层代码"
