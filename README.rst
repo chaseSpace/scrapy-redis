@@ -49,8 +49,7 @@ Use the following settings in your project:
   # Ensure all spiders share same duplicates filter through redis.
   DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"  （Default for scrapy-redis）
   DUPEFILTER_CLASS = "scrapy_redis.dupefilter_bloom.BloomDupeFilter"  (BloomFilter)
-  # Redis set in spider's settings
-  REDIS_DB_NUM = 0 （Which database to connect to）
+  # block numbers set in spider's settings
   BLOCK_NUM = 1 (1 equal to 256M memory for redis server，Duplicate removal that can satisfy 90 million request)
   # Default requests serializer is pickle, but it can be changed to any module
   # with loads and dumps functions. Note that pickle is not compatible between
