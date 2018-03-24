@@ -119,7 +119,7 @@ Use the following settings in your project:
 其他
 ----------------
 
-关于scrapy-redis-BloomFilter库的实现，我并不是先行者。这里要提到一位大神，github：qiyeboy，早在一年多（2017，至少）以前它就把这个写出来了。我本是想直接使用它的 `scrapy-redis-BloomFilter`_ 库的,但实践过后发觉它的使用方式稍许麻烦，需要将库文件拷贝到scrapy_project/scrapy_project目录下，运行scrapy后还会生成其他文件，作为强迫症的我如何能忍呢。。于是花了些时间自己将BloomFilter的功能嵌入到scrapy-redis组件中去，不过实现bloomfilter的 `底层代码`_ 还是用的它的。使用起来是相当的简单，几乎与使用scrapy-redis没什么区别。
+关于scrapy-redis-BloomFilter库的实现，我并不是先行者。这里要提到一位大神，github：qiyeboy，早在一年多（2017，至少）以前它就把这个写出来了。我本是想直接使用它的 `scrapy-redis-BloomFilter`_ 库的,但实践过后发觉它的使用方式稍许麻烦，需要将库文件拷贝到scrapy_project/scrapy_project目录下，运行scrapy后还会生成其他文件，作为强迫症的我如何能忍呢。。于是花了些时间自己将BloomFilter的功能嵌入到scrapy-redis组件中去，不过实现bloomfilter的底层代码 `here`_ 还是用的它的。使用起来是相当的简单，几乎与使用scrapy-redis没什么区别。
 
 .. note::
 
@@ -208,4 +208,4 @@ Thanks
 
 .. _scrapy-redis-BloomFilter: https://github.com/qiyeboy/Scrapy_Redis_Bloomfilter
 .. _scrapy-redis: https://github.com/rmax/scrapy-redis  
-.. _底层代码:https://blog.csdn.net/bone_ace/article/details/53107018
+.. _here: https://blog.csdn.net/bone_ace/article/details/53107018
